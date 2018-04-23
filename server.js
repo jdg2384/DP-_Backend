@@ -72,10 +72,11 @@ app.get('/deals', (req, res, next) => {
 })
 
 //Get one route
-app.get('/deals/:id',(req,res,next) => {
-    let id = req.params.id;
+app.get('/deals/:pipedrive_id',(req,res,next) => {
+    //console.log(req.params.pipedrive_id)
+    let pipedrive_id = req.params.pipedrive_id;
     knex('deals')
-    .where('id',id)
+    .where('pipedrive_id',pipedrive_id)
     .select('*')
     .then(data => {
         res.send(data[0])
@@ -85,12 +86,27 @@ app.get('/deals/:id',(req,res,next) => {
     })
 })
 
+// app.get('/deals/:id',(req,res,next) => {
+//     console.log(req.params.pipedrive_id)
+//     let id = req.params.id;
+//     knex('deals')
+//     .where('id',id)
+//     .select('*')
+//     .then(data => {
+//         res.send(data[0])
+//     })
+//     .catch(err => {
+//         res.status(404).send(err)
+//     })
+// })
+
 // // post route 
 app.post('/deals',(req,res,next)=>{
-    console.log(req.body)
+    //console.log(req.body)
     let rb = req.body
     knex('deals')
     .insert({
+        pipedrive_id: rb.pipedrive_id,
         application: rb.application,
         product_name: rb.product_name,
         cellular_tech: rb.cellular_tech,
@@ -113,22 +129,34 @@ app.post('/deals',(req,res,next)=>{
 
 
 // // Update/patch route
-// app.patch('/messages/:id',(req,res,next) => {
-//     let id = req.params.id; 
-//     knex('messages')
-//     .where('id',id)
-//     .update({
-//         id: req.body.id,
-//         name:req.body.name,
-//         message:req.body.message
-//     })
-//     .then(data =>{
-//         res.send(data[0])
-//     })
-//     .catch(err => {
-//         res.status(404).send(err)
-//     })
-// })
+app.patch('/deals/:pipedrive_id',(req,res,next) => {
+    console.log(req.body)
+    let pipedrive_id = req.params.pipedrive_id;
+    let rb = req.body
+    knex('deals')
+    .where('pipedrive_id',pipedrive_id)
+    .update({
+        id:rb.id,
+        pipedrive_id: rb.pipedrive_id,
+        application: rb.application,
+        product_name: rb.product_name,
+        cellular_tech: rb.cellular_tech,
+        cellular_bands: rb.cellular_bands,
+        size_viable: rb.size_viable,
+        org_name: rb.org_name,
+        lead_person: rb.lead_person,
+        lead_email: rb.lead_email,
+        org_person_email: rb.org_person_email,
+        mnda_started: rb.mnda_started,
+        mnda_archived: rb.mnda_archived,
+    })
+    .then(data =>{
+        res.send(data[0])
+    })
+    .catch(err => {
+        res.status(404).send(err)
+    })
+})
 // //delete route
 // app.delete('/messages/:id',(req,res,next) => {
 //     let id = req.params.id;
