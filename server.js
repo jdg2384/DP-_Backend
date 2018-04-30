@@ -86,20 +86,6 @@ app.get('/deals/:pipedrive_id',(req,res,next) => {
     })
 })
 
-// app.get('/deals/:id',(req,res,next) => {
-//     console.log(req.params.pipedrive_id)
-//     let id = req.params.id;
-//     knex('deals')
-//     .where('id',id)
-//     .select('*')
-//     .then(data => {
-//         res.send(data[0])
-//     })
-//     .catch(err => {
-//         res.status(404).send(err)
-//     })
-// })
-
 // // post route 
 app.post('/deals',(req,res,next)=>{
     //console.log(req.body)
@@ -130,7 +116,7 @@ app.post('/deals',(req,res,next)=>{
 
 // // Update/patch route
 app.patch('/deals/:pipedrive_id',(req,res,next) => {
-    console.log(req.body)
+    console.log('patch route + ',req.body)
     let pipedrive_id = req.params.pipedrive_id;
     let rb = req.body
     knex('deals')
@@ -151,6 +137,33 @@ app.patch('/deals/:pipedrive_id',(req,res,next) => {
         mnda_archived: rb.mnda_archived,
     })
     .then(data =>{
+        res.send(data[0])
+    })
+    .catch(err => {
+        res.status(404).send(err)
+    })
+})
+/// SEEDED FAKE DEALS
+
+// Get all route
+app.get('/seed_deals', (req, res, next) => {
+    knex('seed_deals')
+    .select('*')
+    .then(data=>{
+        res.send(data)
+    })
+    .catch(err => {
+        res.status(404).send(err)
+    })
+})
+
+//Get one route
+app.get('/seed_deals/:id',(req,res,next) => {
+    let id = req.params.id;
+    knex('seed_deals')
+    .where('id',id)
+    .select('id','title','org_name','person_name','person_email','owner_name','stage_id')
+    .then(data => {
         res.send(data[0])
     })
     .catch(err => {
